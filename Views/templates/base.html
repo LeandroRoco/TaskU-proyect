@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TaskU INACAP{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Menú lateral INACAP - Oculto por defecto */
+        .sidebar {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background: var(--inacap-blue);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            padding-top: 60px;
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .sidebar-item {
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .sidebar-item:hover, .sidebar-item.active {
+            background: var(--inacap-light-blue);
+            border-left-color: var(--inacap-orange);
+        }
+        
+        .menu-toggle {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            z-index: 1001;
+            background: var(--inacap-orange);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="full-page">
+    {% if session.get('user_id') %}
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    
+    <nav class="sidebar" id="sidebar">
+        <div style="padding: 20px; color: white; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <h3>{{ session.get('user_name') }}</h3>
+            <small>{{ session.get('user_email') }}</small>
+        </div>
+        <a href="{{ url_for('dashboard.index') }}" class="sidebar-item {% if active_page == 'dashboard' %}active{% endif %}">
+            📊 Dashboard
+        </a>
+        <a href="{{ url_for('tarea.crear') }}" class="sidebar-item {% if active_page == 'crear_tarea' %}active{% endif %}">
+            ➕ Nueva Tarea
+        </a>
+        <a href="{{ url_for('asignatura.listar') }}" class="sidebar-item {% if active_page == 'asignaturas' %}active{% endif %}">
+            📚 Mis Asignaturas
+        </a>
+        <a href="{{ url_for('calendario.ver') }}" class="sidebar-item {% if active_page == 'calendario' %}active{% endif %}">
+            📅 Calendario
+        </a>
+        <a href="{{ url_for('auth.logout') }}" class="sidebar-item" style="color: #ff9999;">
+            🚪 Cerrar Sesión
+        </a>
+    </nav>
+    {% endif %}
+    
+    {% block content %}{% endblock %}
+    
+    {% if session.get('user_id') %}
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+    </script>
+    {% endif %}
+</body>
+</html>

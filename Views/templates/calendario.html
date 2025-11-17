@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario - TaskU INACAP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b1528 100%);
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(196, 30, 58, 0.3);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-left h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(-5px);
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .calendar-controls {
+            background: #f5f5f5;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .month-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .month-btn {
+            background: #c41e3a;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .month-btn:hover {
+            background: #8b1528;
+            transform: scale(1.1);
+        }
+
+        .current-month {
+            font-size: 1.5rem;
+            font-weight: 600;
+            min-width: 200px;
+            text-align: center;
+            color: #1a1a1a;
+        }
+
+        .view-options {
+            display: flex;
+            gap: 0.5rem;
+            background: #e0e0e0;
+            padding: 0.25rem;
+            border-radius: 8px;
+        }
+
+        .view-btn {
+            background: transparent;
+            color: #1a1a1a;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .view-btn.active {
+            background: #c41e3a;
+            color: white;
+        }
+
+        .view-btn:hover:not(.active) {
+            background: rgba(196, 30, 58, 0.1);
+        }
+
+        .calendar-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 1.5rem;
+        }
+
+        .calendar-main {
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #c41e3a;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: 600;
+            color: #c41e3a;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+        }
+
+        .calendar-day {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            min-height: 100px;
+            padding: 0.75rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: #f5f5f5;
+            border-color: #c41e3a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.2);
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.3;
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b1528 100%);
+            border-color: #c41e3a;
+        }
+
+        .calendar-day.today .day-number {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .day-number {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #1a1a1a;
+        }
+
+        .calendar-event {
+            background: #c41e3a;
+            padding: 0.35rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-top: 0.35rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            border-left: 3px solid;
+        }
+
+        .calendar-event.alta {
+            background: rgba(196, 30, 58, 0.8);
+            border-left-color: #ff1744;
+        }
+
+        .calendar-event.media {
+            background: rgba(196, 30, 58, 0.5);
+            border-left-color: #ffa726;
+        }
+
+        .calendar-event.baja {
+            background: rgba(196, 30, 58, 0.3);
+            border-left-color: #66bb6a;
+        }
+
+        .calendar-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .upcoming-tasks, .legend {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .sidebar-header, .legend-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #c41e3a;
+            border-bottom: 2px solid #c41e3a;
+            padding-bottom: 0.5rem;
+        }
+
+        .task-item {
+            background: #fafafa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid #c41e3a;
+            transition: all 0.3s;
+        }
+
+        .task-item:hover {
+            background: #f5f5f5;
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: #1a1a1a;
+        }
+
+        .task-subject {
+            color: #c41e3a;
+            font-size: 0.85rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .task-date {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            color: #1a1a1a;
+        }
+
+        .legend-color {
+            width: 40px;
+            height: 20px;
+            border-radius: 4px;
+            border-left: 3px solid;
+        }
+
+        .legend-color.alta {
+            background: rgba(196, 30, 58, 0.8);
+            border-left-color: #ff1744;
+        }
+
+        .legend-color.media {
+            background: rgba(196, 30, 58, 0.5);
+            border-left-color: #ffa726;
+        }
+
+        .legend-color.baja {
+            background: rgba(196, 30, 58, 0.3);
+            border-left-color: #66bb6a;
+        }
+
+        @media (max-width: 1200px) {
+            .calendar-container {
+                grid-template-columns: 1fr;
+            }
+
+            .calendar-sidebar {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-left h1 {
+                font-size: 1.5rem;
+            }
+
+            .calendar-controls {
+                flex-direction: column;
+            }
+
+            .calendar-grid {
+                gap: 0.5rem;
+            }
+
+            .calendar-day {
+                min-height: 80px;
+                padding: 0.5rem;
+            }
+
+            .current-month {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1>📅 Calendario Académico INACAP</h1>
+                <p>Visualiza todas tus tareas y fechas importantes</p>
+            </div>
+                            <a href="dashboard.html" class="back-btn">← Volver al Dashboard</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="calendar-controls">
+            <div class="month-nav">
+                <button class="month-btn" onclick="previousMonth()">‹</button>
+                <div class="current-month" id="current-month">Septiembre 2025</div>
+                <button class="month-btn" onclick="nextMonth()">›</button>
+            </div>
+            <div class="view-options">
+                <button class="view-btn active">Mes</button>
+                <button class="view-btn">Semana</button>
+                <button class="view-btn">Día</button>
+            </div>
+        </div>
+
+        <div class="calendar-container">
+            <div class="calendar-main">
+                <div class="weekdays">
+                    <div class="weekday">Dom</div>
+                    <div class="weekday">Lun</div>
+                    <div class="weekday">Mar</div>
+                    <div class="weekday">Mié</div>
+                    <div class="weekday">Jue</div>
+                    <div class="weekday">Vie</div>
+                    <div class="weekday">Sáb</div>
+                </div>
+                <div class="calendar-grid" id="calendar-grid"></div>
+            </div>
+
+            <div class="calendar-sidebar">
+                <div class="upcoming-tasks">
+                    <div class="sidebar-header">📋 Próximas Tareas</div>
+                    <div class="task-item">
+                        <div class="task-title">Entrega Proyecto Final</div>
+                        <div class="task-subject">Integración de Proyecto</div>
+                        <div class="task-date">⏰ Hoy, 23:59</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-title">Parcial Base de Datos</div>
+                        <div class="task-subject">Base de Datos</div>
+                        <div class="task-date">⏰ Mañana, 08:00</div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-title">Lab React Native</div>
+                        <div class="task-subject">Desarrollo Móvil</div>
+                        <div class="task-date">⏰ 18 Sep, 14:00</div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-title">🎯 Leyenda de Prioridades</div>
+                    <div class="legend-item">
+                        <div class="legend-color alta"></div>
+                        <span>Prioridad Alta</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color media"></div>
+                        <span>Prioridad Media</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color baja"></div>
+                        <span>Prioridad Baja</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        const months = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
+
+        const tasks = [
+            { date: 15, title: 'Proyecto Final', priority: 'alta' },
+            { date: 16, title: 'Parcial BD', priority: 'alta' },
+            { date: 18, title: 'Lab React', priority: 'media' },
+            { date: 20, title: 'Ensayo', priority: 'baja' },
+            { date: 22, title: 'Presentación', priority: 'media' }
+        ];
+
+        function generateCalendar() {
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const firstDayOfWeek = firstDay.getDay();
+            const daysInMonth = lastDay.getDate();
+
+            document.getElementById('current-month').textContent = `${months[currentMonth]} ${currentYear}`;
+
+            const calendarGrid = document.getElementById('calendar-grid');
+            calendarGrid.innerHTML = '';
+
+            const prevMonth = new Date(currentYear, currentMonth, 0);
+            const daysInPrevMonth = prevMonth.getDate();
+
+            for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                const dayElement = createDayElement(daysInPrevMonth - i, true);
+                calendarGrid.appendChild(dayElement);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = createDayElement(day, false);
+                
+                const today = new Date();
+                if (currentYear === today.getFullYear() && 
+                    currentMonth === today.getMonth() && 
+                    day === today.getDate()) {
+                    dayElement.classList.add('today');
+                }
+
+                const dayTasks = tasks.filter(task => task.date === day);
+                dayTasks.forEach(task => {
+                    const eventElement = document.createElement('div');
+                    eventElement.className = `calendar-event ${task.priority}`;
+                    eventElement.textContent = task.title;
+                    dayElement.appendChild(eventElement);
+                });
+
+                calendarGrid.appendChild(dayElement);
+            }
+
+            const cellsUsed = firstDayOfWeek + daysInMonth;
+            const remainingCells = 42 - cellsUsed;
+
+            for (let day = 1; day <= remainingCells; day++) {
+                const dayElement = createDayElement(day, true);
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+
+        function createDayElement(day, isOtherMonth) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            if (isOtherMonth) {
+                dayElement.classList.add('other-month');
+            }
+
+            const dayNumber = document.createElement('div');
+            dayNumber.className = 'day-number';
+            dayNumber.textContent = day;
+            dayElement.appendChild(dayNumber);
+
+            return dayElement;
+        }
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            generateCalendar();
+        });
+    </script>
+</body>
+</html>

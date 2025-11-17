@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Asignaturas - TaskU INACAP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b1528 100%);
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(196, 30, 58, 0.3);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-left h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .add-btn {
+            background: white;
+            color: #c41e3a;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .add-btn:hover {
+            background: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(-5px);
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .semester-info {
+            margin-bottom: 2rem;
+        }
+
+        .semester-card {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 5px solid #c41e3a;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .semester-card h2 {
+            color: #1a1a1a;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .semester-card p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .subject-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .subject-color {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .subject-color.integr {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+        }
+
+        .subject-color.bd {
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+        }
+
+        .subject-color.movil {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+        }
+
+        .subject-color.seguridad {
+            background: linear-gradient(135deg, #c41e3a, #8b1528);
+        }
+
+        .subject-color.redes {
+            background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+        }
+
+        .subject-color.algoritmos {
+            background: linear-gradient(135deg, #FFC107, #FFA000);
+        }
+
+        .subject-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: 1px solid #e0e0e0;
+            width: 35px;
+            height: 35px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .action-btn:hover {
+            background: #f5f5f5;
+            border-color: #c41e3a;
+        }
+
+        .action-btn.delete:hover {
+            background: #ffe5e5;
+            border-color: #c41e3a;
+            color: #c41e3a;
+        }
+
+        .subject-content {
+            padding: 1.5rem;
+        }
+
+        .subject-name {
+            font-size: 1.3rem;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .subject-code {
+            color: #c41e3a;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .subject-professor {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .subject-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #fafafa;
+            border-radius: 8px;
+        }
+
+        .stat {
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #c41e3a;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .subject-schedule {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .schedule-item {
+            background: #e8e8e8;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #1a1a1a;
+            border-left: 3px solid #c41e3a;
+        }
+
+        .subject-footer {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        .view-tasks-btn {
+            width: 100%;
+            background: #c41e3a;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .view-tasks-btn:hover {
+            background: #8b1528;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b1528 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #c41e3a;
+            box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.1);
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #1a1a1a;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-primary {
+            background: #c41e3a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #8b1528;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-left h1 {
+                font-size: 1.5rem;
+            }
+
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .semester-card h2 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1>📚 Mis Asignaturas</h1>
+                <p>Gestiona tus materias del semestre actual</p>
+            </div>
+            <div class="header-actions">
+                <button class="add-btn" onclick="showAddSubject()">+ Agregar Asignatura</button>
+                <a href="dashboard.html" class="back-btn">← Volver al Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="semester-info">
+            <div class="semester-card">
+                <h2>Segundo Semestre 2025</h2>
+                <p>Ingeniería en Informática - 6 asignaturas activas</p>
+            </div>
+        </div>
+
+        <div class="subjects-grid" id="subjects-grid">
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-color integr"></div>
+                    <div class="subject-actions">
+                        <button class="action-btn" onclick="editSubject('integracion')">✎</button>
+                        <button class="action-btn delete" onclick="deleteSubject('integracion')">🗑</button>
+                    </div>
+                </div>
+                <div class="subject-content">
+                    <h3 class="subject-name">Integración de Proyecto</h3>
+                    <p class="subject-code">INF-401</p>
+                    <p class="subject-professor">Prof. Luis Pérez</p>
+                    <div class="subject-stats">
+                        <div class="stat">
+                            <span class="stat-number">3</span>
+                            <span class="stat-label">Tareas Pendientes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">85%</span>
+                            <span class="stat-label">Progreso</span>
+                        </div>
+                    </div>
+                    <div class="subject-schedule">
+                        <span class="schedule-item">Lun 14:00-16:00</span>
+                        <span class="schedule-item">Mié 14:00-16:00</span>
+                    </div>
+                </div>
+                <div class="subject-footer">
+                    <button class="view-tasks-btn" onclick="viewSubjectTasks('integracion')">Ver Tareas</button>
+                </div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-color bd"></div>
+                    <div class="subject-actions">
+                        <button class="action-btn" onclick="editSubject('bd')">✎</button>
+                        <button class="action-btn delete" onclick="deleteSubject('bd')">🗑</button>
+                    </div>
+                </div>
+                <div class="subject-content">
+                    <h3 class="subject-name">Base de Datos</h3>
+                    <p class="subject-code">INF-301</p>
+                    <p class="subject-professor">Prof. María González</p>
+                    <div class="subject-stats">
+                        <div class="stat">
+                            <span class="stat-number">2</span>
+                            <span class="stat-label">Tareas Pendientes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">78%</span>
+                            <span class="stat-label">Progreso</span>
+                        </div>
+                    </div>
+                    <div class="subject-schedule">
+                        <span class="schedule-item">Mar 10:00-12:00</span>
+                        <span class="schedule-item">Jue 10:00-12:00</span>
+                    </div>
+                </div>
+                <div class="subject-footer">
+                    <button class="view-tasks-btn" onclick="viewSubjectTasks('bd')">Ver Tareas</button>
+                </div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-color movil"></div>
+                    <div class="subject-actions">
+                        <button class="action-btn" onclick="editSubject('movil')">✎</button>
+                        <button class="action-btn delete" onclick="deleteSubject('movil')">🗑</button>
+                    </div>
+                </div>
+                <div class="subject-content">
+                    <h3 class="subject-name">Desarrollo Móvil</h3>
+                    <p class="subject-code">INF-302</p>
+                    <p class="subject-professor">Prof. Carlos Ramírez</p>
+                    <div class="subject-stats">
+                        <div class="stat">
+                            <span class="stat-number">4</span>
+                            <span class="stat-label">Tareas Pendientes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">72%</span>
+                            <span class="stat-label">Progreso</span>
+                        </div>
+                    </div>
+                    <div class="subject-schedule">
+                        <span class="schedule-item">Lun 16:00-18:00</span>
+                        <span class="schedule-item">Vie 14:00-16:00</span>
+                    </div>
+                </div>
+                <div class="subject-footer">
+                    <button class="view-tasks-btn" onclick="viewSubjectTasks('movil')">Ver Tareas</button>
+                </div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-color seguridad"></div>
+                    <div class="subject-actions">
+                        <button class="action-btn" onclick="editSubject('seguridad')">✎</button>
+                        <button class="action-btn delete" onclick="deleteSubject('seguridad')">🗑</button>
+                    </div>
+                </div>
+                <div class="subject-content">
+                    <h3 class="subject-name">Seguridad de la Información</h3>
+                    <p class="subject-code">INF-303</p>
+                    <p class="subject-professor">Prof. Ana Torres</p>
+                    <div class="subject-stats">
+                        <div class="stat">
+                            <span class="stat-number">1</span>
+                            <span class="stat-label">Tareas Pendientes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">92%</span>
+                            <span class="stat-label">Progreso</span>
+                        </div>
+                    </div>
+                    <div class="subject-schedule">
+                        <span class="schedule-item">Mar 14:00-16:00</span>
+                        <span class="schedule-item">Jue 16:00-18:00</span>
+                    </div>
+                </div>
+                <div class="subject-footer">
+                    <button class="view-tasks-btn" onclick="viewSubjectTasks('seguridad')">Ver Tareas</button>
+                </div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-color redes"></div>
+                    <div class="subject-actions">
+                        <button class="action-btn" onclick="editSubject('redes')">✎</button>
+                        <button class="action-btn delete" onclick="deleteSubject('redes')">🗑</button>
+                    </div>
+                </div>
+                <div class="subject-content">
+                    <h3 class="subject-name">Redes de Computadores</h3>
+                    <p class="subject-code">INF-304</p>
+                    <p class="subject-professor">Prof. Roberto Silva</p>
+                    <div class="subject-stats">
+                        <div class="stat">
+                            <span class="stat-number">2</span>
+                            <span class="stat-label">Tareas Pendientes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">88%</span>
+                            <span class="stat-label">Progreso</span>
+                        </div>
+                    </div>
+                    <div class="subject-schedule">
+                        <span class="schedule-item">Mié 10:00-12:00</span>
+                        <span class="schedule-item">Vie 10:00-12:00</span>
+                    </div>
+                </div>
+                <div class="subject-footer">
+                    <button class="view-tasks-btn" onclick="viewSubjectTasks('redes')">Ver Tareas</button>
+                </div>
+            </div>
+
+            <div class="subject-card">
+                <div class="subject-header">
+                    <div class="subject-color algoritmos"></div>
+                    <div class="subject-actions">
+                        <button class="action-btn" onclick="editSubject('algoritmos')">✎</button>
+                        <button class="action-btn delete" onclick="deleteSubject('algoritmos')">🗑</button>
+                    </div>
+                </div>
+                <div class="subject-content">
+                    <h3 class="subject-name">Algoritmos y Estructuras</h3>
+                    <p class="subject-code">INF-305</p>
+                    <p class="subject-professor">Prof. Patricia López</p>
+                    <div class="subject-stats">
+                        <div class="stat">
+                            <span class="stat-number">0</span>
+                            <span class="stat-label">Tareas Pendientes</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">95%</span>
+                            <span class="stat-label">Progreso</span>
+                        </div>
+                    </div>
+                    <div class="subject-schedule">
+                        <span class="schedule-item">Lun 10:00-12:00</span>
+                        <span class="schedule-item">Vie 16:00-18:00</span>
+                    </div>
+                </div>
+                <div class="subject-footer">
+                    <button class="view-tasks-btn" onclick="viewSubjectTasks('algoritmos')">Ver Tareas</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar asignatura -->
+    <div class="modal-overlay" id="subject-modal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Agregar Nueva Asignatura</h3>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="subject-form">
+                    <div class="form-group">
+                        <label for="subject-name">Nombre de la Asignatura</label>
+                        <input type="text" id="subject-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject-code">Código</label>
+                        <input type="text" id="subject-code" placeholder="Ej: INF-401">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject-professor">Profesor</label>
+                        <input type="text" id="subject-professor">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject-color">Color</label>
+                        <select id="subject-color">
+                            <option value="integr">Azul</option>
+                            <option value="bd">Verde</option>
+                            <option value="movil">Naranja</option>
+                            <option value="seguridad">Rojo</option>
+                            <option value="redes">Púrpura</option>
+                            <option value="algoritmos">Amarillo</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveSubject()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAddSubject() {
+            document.getElementById('modal-title').textContent = 'Agregar Nueva Asignatura';
+            document.getElementById('subject-form').reset();
+            document.getElementById('subject-modal').style.display = 'flex';
+        }
+
+        function editSubject(subjectId) {
+            document.getElementById('modal-title').textContent = 'Editar Asignatura';
+            document.getElementById('subject-modal').style.display = 'flex';
+        }
+
+        function deleteSubject(subjectId) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta asignatura?')) {
+                alert('Asignatura eliminada (funcionalidad en desarrollo)');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('subject-modal').style.display = 'none';
+        }
+
+        function saveSubject() {
+            const name = document.getElementById('subject-name').value;
+            if (name.trim()) {
+                alert('Asignatura guardada: ' + name);
+                closeModal();
+            } else {
+                alert('El nombre es obligatorio');
+            }
+        }
+
+        function viewSubjectTasks(subjectId) {
+            alert(`Viendo tareas de: ${subjectId}\n(Redireccionar a vista filtrada)`);
+        }
+
+        document.getElementById('subject-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

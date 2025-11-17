@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TaskU - Registro | INACAP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #c41e3a 0%, #8b1528 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 3rem;
+            width: 100%;
+            max-width: 500px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 3rem;
+            color: #c41e3a;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .inacap-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #c41e3a 0%, #8b1528 100%);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(196, 30, 58, 0.3);
+        }
+
+        #register-form {
+            margin-top: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #1a1a1a;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #c41e3a;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(196, 30, 58, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #c41e3a 0%, #8b1528 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(196, 30, 58, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(196, 30, 58, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        #register-message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: none;
+        }
+
+        #register-message.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+            display: block;
+        }
+
+        #register-message.error {
+            background: rgba(196, 30, 58, 0.1);
+            color: #c41e3a;
+            border: 1px solid #c41e3a;
+            display: block;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .login-section {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .login-section p {
+            color: #666;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .login-link {
+            color: #c41e3a;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .login-link:hover {
+            color: #8b1528;
+            text-decoration: underline;
+        }
+
+        .inacap-branding {
+            text-align: center;
+            margin-top: 2rem;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary.loading {
+            position: relative;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .btn-primary.loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .form-group input.invalid {
+            border-color: #c41e3a;
+            background: rgba(196, 30, 58, 0.05);
+        }
+
+        .form-group input.valid {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .password-requirements {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #fafafa;
+            border-radius: 6px;
+        }
+
+        .password-requirements ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .password-requirements li {
+            padding: 0.2rem 0;
+        }
+
+        .password-requirements li.valid {
+            color: #4CAF50;
+        }
+
+        .password-requirements li.invalid {
+            color: #c41e3a;
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .logo h1 {
+                font-size: 2.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container" role="main">
+        <div class="logo" aria-label="TaskU INACAP">
+            <h1>TaskU</h1>
+            <p>Crear Nueva Cuenta</p>
+            <div class="inacap-badge">INACAP</div>
+        </div>
+
+        <form id="register-form" novalidate autocomplete="on">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">Nombre</label>
+                    <input 
+                        id="firstName" 
+                        name="firstName" 
+                        type="text" 
+                        placeholder="Juan" 
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Apellido</label>
+                    <input 
+                        id="lastName" 
+                        name="lastName" 
+                        type="text" 
+                        placeholder="Pérez" 
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Correo Electrónico INACAP</label>
+                <input 
+                    id="email" 
+                    name="email" 
+                    type="email" 
+                    placeholder="estudiante@inacapmail.cl" 
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="studentId">RUT (sin puntos ni guión)</label>
+                <input 
+                    id="studentId" 
+                    name="studentId" 
+                    type="text" 
+                    placeholder="12345678-9" 
+                    required
+                />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input 
+                    id="password" 
+                    name="password" 
+                    type="password" 
+                    placeholder="Crea una contraseña segura" 
+                    minlength="6" 
+                    required
+                />
+                <div class="password-requirements" id="password-requirements">
+                    <ul>
+                        <li id="req-length">• Mínimo 6 caracteres</li>
+                        <li id="req-uppercase">• Al menos una mayúscula</li>
+                        <li id="req-number">• Al menos un número</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña</label>
+                <input 
+                    id="confirmPassword" 
+                    name="confirmPassword" 
+                    type="password" 
+                    placeholder="Confirma tu contraseña" 
+                    minlength="6" 
+                    required
+                />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Crear Cuenta</button>
+
+            <p id="register-message" class="text-center" role="status" aria-live="polite"></p>
+        </form>
+
+        <div class="login-section">
+            <p>¿Ya tienes una cuenta?</p>
+            <a href="#" class="login-link" id="login-link">Inicia sesión aquí</a>
+        </div>
+
+        <div class="inacap-branding">Instituto Profesional INACAP - TaskU © 2025</div>
+    </div>
+
+    <script>
+        const registerForm = document.getElementById('register-form');
+        const firstName = document.getElementById('firstName');
+        const lastName = document.getElementById('lastName');
+        const emailInput = document.getElementById('email');
+        const studentId = document.getElementById('studentId');
+        const passwordInput = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const registerMessage = document.getElementById('register-message');
+        const submitBtn = registerForm.querySelector('.btn-primary');
+
+        // Validación de contraseña en tiempo real
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            const reqLength = document.getElementById('req-length');
+            const reqUppercase = document.getElementById('req-uppercase');
+            const reqNumber = document.getElementById('req-number');
+
+            // Longitud mínima
+            if (password.length >= 6) {
+                reqLength.classList.add('valid');
+                reqLength.classList.remove('invalid');
+            } else {
+                reqLength.classList.add('invalid');
+                reqLength.classList.remove('valid');
+            }
+
+            // Mayúscula
+            if (/[A-Z]/.test(password)) {
+                reqUppercase.classList.add('valid');
+                reqUppercase.classList.remove('invalid');
+            } else {
+                reqUppercase.classList.add('invalid');
+                reqUppercase.classList.remove('valid');
+            }
+
+            // Número
+            if (/[0-9]/.test(password)) {
+                reqNumber.classList.add('valid');
+                reqNumber.classList.remove('invalid');
+            } else {
+                reqNumber.classList.add('invalid');
+                reqNumber.classList.remove('valid');
+            }
+
+            // Validación visual del campo
+            if (password.length >= 6 && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
+                this.classList.add('valid');
+                this.classList.remove('invalid');
+            } else if (password) {
+                this.classList.add('invalid');
+                this.classList.remove('valid');
+            }
+        });
+
+        // Validación de confirmación de contraseña
+        confirmPassword.addEventListener('input', function() {
+            if (this.value === passwordInput.value && this.value.length > 0) {
+                this.classList.add('valid');
+                this.classList.remove('invalid');
+            } else if (this.value) {
+                this.classList.add('invalid');
+                this.classList.remove('valid');
+            }
+        });
+
+        // Validación de email
+        emailInput.addEventListener('input', function() {
+            if (this.value && this.validity.valid && this.value.endsWith('@inacapmail.cl')) {
+                this.classList.add('valid');
+                this.classList.remove('invalid');
+            } else if (this.value) {
+                this.classList.add('invalid');
+                this.classList.remove('valid');
+            } else {
+                this.classList.remove('valid', 'invalid');
+            }
+        });
+
+        // Validación de RUT
+        studentId.addEventListener('input', function() {
+            const rut = this.value.replace(/[.-]/g, '');
+            if (rut.length >= 8) {
+                this.classList.add('valid');
+                this.classList.remove('invalid');
+            } else if (this.value) {
+                this.classList.add('invalid');
+                this.classList.remove('valid');
+            }
+        });
+
+        // Validación de nombre y apellido
+        [firstName, lastName].forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value.length >= 2) {
+                    this.classList.add('valid');
+                    this.classList.remove('invalid');
+                } else if (this.value) {
+                    this.classList.add('invalid');
+                    this.classList.remove('valid');
+                }
+            });
+        });
+
+        // Manejo del formulario
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validaciones
+            if (firstName.value.length < 2) {
+                showMessage('El nombre debe tener al menos 2 caracteres', 'error');
+                firstName.focus();
+                return;
+            }
+
+            if (lastName.value.length < 2) {
+                showMessage('El apellido debe tener al menos 2 caracteres', 'error');
+                lastName.focus();
+                return;
+            }
+
+            if (!emailInput.validity.valid || !emailInput.value.endsWith('@inacapmail.cl')) {
+                showMessage('Debes usar un correo @inacapmail.cl', 'error');
+                emailInput.focus();
+                return;
+            }
+
+            if (studentId.value.replace(/[.-]/g, '').length < 8) {
+                showMessage('Ingresa un RUT válido', 'error');
+                studentId.focus();
+                return;
+            }
+
+            const password = passwordInput.value;
+            if (password.length < 6 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+                showMessage('La contraseña no cumple con los requisitos', 'error');
+                passwordInput.focus();
+                return;
+            }
+
+            if (password !== confirmPassword.value) {
+                showMessage('Las contraseñas no coinciden', 'error');
+                confirmPassword.focus();
+                return;
+            }
+
+            // Simulación de registro
+            submitBtn.classList.add('loading');
+            
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                
+                // Guardar usuario en localStorage
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const fullName = `${firstName.value.trim()} ${lastName.value.trim()}`;
+                
+                // Verificar si el email ya existe
+                const existingUser = users.find(u => u.email === emailInput.value.trim());
+                if (existingUser) {
+                    showMessage('Este correo ya está registrado', 'error');
+                    return;
+                }
+                
+                users.push({
+                    id: Date.now(),
+                    name: fullName,
+                    email: emailInput.value.trim(),
+                    rut: studentId.value.trim(),
+                    password: password, // En producción NUNCA guardar contraseñas sin encriptar
+                    createdAt: new Date().toISOString()
+                });
+                
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                showMessage('¡Cuenta creada exitosamente! Ya estás registrado. Redirigiendo al login...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2500);
+            }, 2000);
+        });
+
+        function showMessage(text, type) {
+            registerMessage.textContent = text;
+            registerMessage.className = 'text-center ' + type;
+            registerMessage.style.display = 'block';
+        }
+
+        // Manejo del enlace de login
+        document.getElementById('login-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>
